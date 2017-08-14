@@ -1,0 +1,58 @@
+{
+  "project_info": {
+    "project_number": "5278056155",
+    "firebase_url": "https://stuff-6cccd.firebaseio.com",
+    "project_id": "stuff-6cccd",
+    "storage_bucket": "stuff-6cccd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5278056155:android:1da9fbf4c134969f",
+        "android_client_info": {
+          "package_name": "com.kylefebv.audio.audiocut"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5278056155-95a0dcn5m5dq448rpj7e5d3ohm10ffc3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kylefebv.audio.audiocut",
+            "certificate_hash": "419ea529864a04804a83e713a8f12cfa384b84e1"
+          }
+        },
+        {
+          "client_id": "5278056155-ka8ii9t8oqcuvt718f0978o5hkd4jjo1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCF4OYb6G7W9V4JlDL1tgYfNhnmrv6OxF0"
+        },
+        {
+          "current_key": "AIzaSyDGrmhtKCVjaQmJRAFbdKRWTYBmkn8NQJw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5278056155-ka8ii9t8oqcuvt718f0978o5hkd4jjo1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

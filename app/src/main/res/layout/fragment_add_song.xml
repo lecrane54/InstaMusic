@@ -1,0 +1,75 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:custom1="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              tools:context="com.kylefebv.audio.audiocut.Fragments.AddSongFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add a song"
+        style="?android:listSeparatorTextViewStyle"
+        android:gravity="center_horizontal"
+        android:textSize="20sp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Song Title"
+        android:maxLines="1"
+        android:maxLength="40"
+        android:id="@+id/title_edit"
+
+        />
+
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:gravity="center"
+        >
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/camera"
+        android:id="@+id/image"
+        />
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:id="@+id/sound"
+        android:src="@drawable/isound"
+        />
+</LinearLayout>
+
+
+    <com.dd.processbutton.iml.GenerateProcessButton
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="upload"
+        android:layout_marginTop="50dp"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        custom1:pb_textComplete="Upload Complete"
+        custom1:pb_textProgress="Uploading.." />
+
+
+
+</LinearLayout>

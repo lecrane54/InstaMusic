@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">InstaMusic</string>
+    <string name="facebook_app_id">459263737790942</string>
+    <string name="fb_login_protocol_scheme">fb459263737790942</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
