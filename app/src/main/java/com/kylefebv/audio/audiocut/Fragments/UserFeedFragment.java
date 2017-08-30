@@ -12,11 +12,11 @@ import android.view.ViewGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.kylefebv.audio.audiocut.R;
 import com.kylefebv.audio.audiocut.Adapters.RecyclerAdapter;
+import com.kylefebv.audio.audiocut.R;
 
 
-public class UserFeedFragment extends Fragment  {
+public class UserFeedFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -30,7 +30,6 @@ public class UserFeedFragment extends Fragment  {
     private DatabaseReference ref;
     private String uid;
     private int progress;
-
 
 
     public UserFeedFragment() {
@@ -61,18 +60,30 @@ public class UserFeedFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_user_feed, container, false);
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManager);
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        ref = firebaseDatabase.getReference("songs");
-        adapter = new RecyclerAdapter(getActivity(),firebaseDatabase,uid);
+        initView(v);
+        initFirebase();
 
-        mRecyclerView.setAdapter(adapter);
+        setRecyclerViewAdapter();
 
 
         return v;
+    }
+
+    private void setRecyclerViewAdapter() {
+        adapter = new RecyclerAdapter(getActivity(), firebaseDatabase, uid);
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    private void initView(View v) {
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void initFirebase() {
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        ref = firebaseDatabase.getReference("songs");
     }
 
     @Override
@@ -84,7 +95,7 @@ public class UserFeedFragment extends Fragment  {
     @Override
     public void onPause() {
         super.onPause();
-        Log.i("dd","paus");
+        Log.i("dd", "paus");
         adapter.mMediaPlayer.pause();
         progress = adapter.mMediaPlayer.getCurrentPosition();
     }

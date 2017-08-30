@@ -25,8 +25,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kylefebv.audio.audiocut.Activities.MainActivity;
 import com.kylefebv.audio.audiocut.Adapters.FirebaseAdapter;
-import com.kylefebv.audio.audiocut.R;
 import com.kylefebv.audio.audiocut.Models.User;
+import com.kylefebv.audio.audiocut.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -186,25 +186,30 @@ public class UserProfileFragment extends Fragment {
     private View setUpView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user_profile, container, false);
-        mTextView = (TextView) v.findViewById(nameText);
-        mCircleImageView = (CircleImageView) v.findViewById(R.id.profileImg);
-        myRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        //mFollowButton = (Button) v.findViewById(R.id.followbtn);
-        mFollowerText = (TextView) v.findViewById(R.id.followers);
-        mFollowingText = (TextView) v.findViewById(R.id.followings);
+        initViews(v);
 
 
         mContext = getActivity();
         initLists();
 
 
-        staggeredGridLayoutManagerVertical =
-                new StaggeredGridLayoutManager(
-                        2, //The number of Columns in the grid
-                        LinearLayoutManager.VERTICAL);
+        setLayout();
 
         return v;
 
+    }
+
+    private void setLayout(){
+        staggeredGridLayoutManagerVertical = new StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL);
+    }
+
+    private void initViews(View v){
+        mTextView = (TextView) v.findViewById(nameText);
+        mCircleImageView = (CircleImageView) v.findViewById(R.id.profileImg);
+        myRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+        //mFollowButton = (Button) v.findViewById(R.id.followbtn);
+        mFollowerText = (TextView) v.findViewById(R.id.followers);
+        mFollowingText = (TextView) v.findViewById(R.id.followings);
     }
 
     private void loadImage() {

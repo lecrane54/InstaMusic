@@ -40,10 +40,10 @@ public class SingleSongFragment extends Fragment {
     private static final String ARG_PARAM1 = "uuid";
     private static final String ARG_PARAM2 = "sRef";
     private static final String ARG_PARAM3 = "title";
-    private TextView mTextView , nameTextView;
+    private TextView mTextView, nameTextView;
     private CircleImageView mCircleImageView;
     private RoundedImageView mRoundedImageView;
-    private String name,title;
+    private String name, title;
     private String songMp3;
     private MediaPlayer mMediaPlayer;
     String uid;
@@ -53,6 +53,7 @@ public class SingleSongFragment extends Fragment {
     StorageReference mStorageReference;
     FirebaseStorage storage;
     FirebaseDatabase firebaseDatabase;
+    FirebaseUser u;
 
 
     DatabaseReference ref;
@@ -62,13 +63,12 @@ public class SingleSongFragment extends Fragment {
     }
 
 
-
     public static SingleSongFragment newInstance(String param1, String param2, String param3) {
         SingleSongFragment fragment = new SingleSongFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2,param2);
-        args.putString(ARG_PARAM3,param3);
+        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM3, param3);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,30 +78,19 @@ public class SingleSongFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_single_song, container, false);
-        mTextView = (TextView)v.findViewById(R.id.songName);
-        nameTextView = (TextView)v.findViewById(R.id.profileName);
-        mCircleImageView = (CircleImageView)v.findViewById(R.id.profileImg1);
-        mRoundedImageView = (RoundedImageView)v.findViewById(R.id.imageView1);
-        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        storage = FirebaseStorage.getInstance();
-       // ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        View v = inflater.inflate(R.layout.fragment_single_song, container, false);
+        initViews(v);
+        initFirebase();
 
 
+        setRotation();
 
-        rotateAnimation = new RotateAnimation(0, 360f,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
 
-        rotateAnimation.setInterpolator(new LinearInterpolator());
-        rotateAnimation.setDuration(1200);
-        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        createMediaP();
 
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setLooping(false);
-        uid = u.getUid();
-        name = u.getDisplayName();
-        if(getArguments() != null){
+        getUserDetails();
+
+        if (getArguments() != null) {
             songMp3 = getArguments().getString("uuid");
             title = getArguments().getString("title");
 
@@ -109,26 +98,65 @@ public class SingleSongFragment extends Fragment {
             mTextView.setText(title);
             loadSongImage();
         }
-        loadImage();
 
+        loadImage();
+        setListener();
+
+
+        return v;
+    }
+
+
+    private void getUserDetails() {
+        uid = u.getUid();
+        name = u.getDisplayName();
+    }
+
+    private void setListener() {
         mRoundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(play == 0) {
+                if (play == 0) {
                     fetchAudioUrlFromFirebase();
                     mRoundedImageView.startAnimation(rotateAnimation);
 
-                }else{
+                } else {
                     stopMusic();
                     mRoundedImageView.clearAnimation();
 
                 }
             }
         });
-        return v;
     }
 
-    private void loadImage(){
+    private void createMediaP() {
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setLooping(false);
+    }
+
+    private void initFirebase() {
+        u = FirebaseAuth.getInstance().getCurrentUser();
+        storage = FirebaseStorage.getInstance();
+    }
+
+    private void setRotation() {
+        rotateAnimation = new RotateAnimation(0, 360f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setDuration(1200);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+    }
+
+    private void initViews(View v) {
+        mTextView = (TextView) v.findViewById(R.id.songName);
+        nameTextView = (TextView) v.findViewById(R.id.profileName);
+        mCircleImageView = (CircleImageView) v.findViewById(R.id.profileImg1);
+        mRoundedImageView = (RoundedImageView) v.findViewById(R.id.imageView1);
+    }
+
+    private void loadImage() {
         mStorageReference2 = FirebaseStorage.getInstance().getReference("userImages/").child(uid + ".png");
         Glide.with(this)
                 .using(new FirebaseImageLoader())
@@ -137,7 +165,7 @@ public class SingleSongFragment extends Fragment {
 
     }
 
-    private void loadSongImage(){
+    private void loadSongImage() {
 
         mStorageReference = FirebaseStorage.getInstance().getReference("image/").child(songMp3);
         Glide.with(this)
@@ -163,7 +191,7 @@ public class SingleSongFragment extends Fragment {
                         @Override
                         public void onPrepared(MediaPlayer mp) {
                             mMediaPlayer = mp;
-                            play =1;
+                            play = 1;
                             mMediaPlayer.start();
                         }
                     });
@@ -182,12 +210,13 @@ public class SingleSongFragment extends Fragment {
                 });
 
     }
-    private void getFollowers(){
+
+    private void getFollowers() {
 
     }
 
 
-    private void stopMusic(){
+    private void stopMusic() {
         mMediaPlayer.stop();
         mMediaPlayer.reset();
         play = 0;
