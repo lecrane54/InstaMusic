@@ -215,14 +215,7 @@ public class LoginActivity extends AppCompatActivity {
 
         uploadFile(bitmap1,uid);
 
-
-
         userRef.child(uid).setValue(mUser);
-
-
-
-
-
     }
 
 

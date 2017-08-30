@@ -30,8 +30,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.kylefebv.audio.audiocut.R;
 import com.kylefebv.audio.audiocut.Models.UserSong;
+import com.kylefebv.audio.audiocut.R;
 import com.pavlospt.rxfile.RxFile;
 
 import java.io.File;
@@ -64,13 +64,13 @@ public class AddSongFragment extends Fragment{
     UserSong song;
     String mRandom;
     File mFile;
+    FirebaseUser u;
     String filepath, picFilePath;
     ProgressDialog mProgressDialog;
 
 
 
     public AddSongFragment() {
-        // Required empty public constructor
     }
 
 
@@ -79,31 +79,23 @@ public class AddSongFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_add_song, container, false);
-        mTitle = (EditText)v.findViewById(R.id.title_edit);
-        mImageView = (ImageView)v.findViewById(R.id.image);
-        mButton = (GenerateProcessButton) v.findViewById(R.id.button);
+        initView(v);
 
+        initFirebase();
 
-
-        // / icon
-        soundImageView = (ImageView)v.findViewById(R.id.sound);
-
-        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        mFirebaseStorage = FirebaseStorage.getInstance();
-        uid = u.getUid();
         RxFile.setLoggingEnabled(true);
-        database = FirebaseDatabase.getInstance();
-        mDatabaseReference = database.getReference("songs").child(uid);
-        mProgressDialog = new ProgressDialog(getActivity());
-        mProgressDialog.setTitle("Uploading that snazzy tune");
-        mProgressDialog.setMessage("Be patient");
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setIndeterminate(false);
+        createProcessDialog();
 
-        creator = u.getDisplayName();
-        song = new UserSong();
-        mRandom = song.generateRandomUID();
+        newSong();
 
+
+        setListeners();
+
+        return v;
+    }
+
+
+    private void setListeners(){
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,14 +129,37 @@ public class AddSongFragment extends Fragment{
                 else{
                     Toasty.error(getApplicationContext(),"Check to see if you have a title, image and song!",Toast.LENGTH_LONG).show();
                 }
-
-
             }
         });
-
-        return v;
+    }
+    private void newSong(){
+        creator = u.getDisplayName();
+        song = new UserSong();
+        mRandom = song.generateRandomUID();
+    }
+    private void initView(View v){
+        mTitle = (EditText)v.findViewById(R.id.title_edit);
+        mImageView = (ImageView)v.findViewById(R.id.image);
+        mButton = (GenerateProcessButton) v.findViewById(R.id.button);
+        soundImageView = (ImageView)v.findViewById(R.id.sound);
     }
 
+    private void createProcessDialog(){
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setTitle("Uploading that snazzy tune");
+        mProgressDialog.setMessage("Be patient");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setIndeterminate(false);
+    }
+
+    private void initFirebase(){
+        u = FirebaseAuth.getInstance().getCurrentUser();
+        mFirebaseStorage = FirebaseStorage.getInstance();
+        uid = u.getUid();
+        database = FirebaseDatabase.getInstance();
+        mDatabaseReference = database.getReference("songs").child(uid);
+
+    }
 
     private void cacheFileFromDrive(Uri uri, final String fileName) {
         RxFile.createFileFromUri(getActivity(),uri)
@@ -357,9 +372,5 @@ public class AddSongFragment extends Fragment{
             }
         });
     }
-
-
-
-
 
 }

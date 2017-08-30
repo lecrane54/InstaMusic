@@ -69,8 +69,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     UserSong song = postSnapshot.getValue(UserSong.class);
                     titles.add(song.getTitle());
-
-
                     ids.add(song.getUuid());
                 }
                 notifyDataSetChanged();
@@ -90,33 +88,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 
-    //TODO: fix to get the image and song of user
     public void getSongPaths() {
 
         for (int i = 0; i < ids.size(); i++) {
             // get the corresponding mp3 within ids
             mStorageReference = mFirebaseStorage.getReference("audio/").child(ids.get(i) + ".mp3");
-
-            // mStorageReference = FirebaseStorage.getInstance().getReference(s + ".mp3");
-
             mp3s.add(mStorageReference);
 
         }
     }
 
 
-    /*
-        private void loadImage(){
-            mStorageReference = FirebaseStorage.getInstance().getReference(FirebaseAuth.getInstance().getCurrentUser().getUid() + ".png");
-            Glide.with(context)
-                    .using(new FirebaseImageLoader())
-                    .load(mStorageReference)
-                    .into(mCircleImageView);
-
-        }
-
-
-*/
     @Override
     public SongItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView itemCardView = (CardView) layoutInflater.inflate(R.layout.user_profile_card, parent, false);
