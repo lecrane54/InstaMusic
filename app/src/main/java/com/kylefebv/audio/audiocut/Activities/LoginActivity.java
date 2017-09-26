@@ -212,6 +212,7 @@ public class LoginActivity extends AppCompatActivity {
         mUser.setFbId(fbid);
         mUser.setName(name);
         mUser.setEmail(email);
+        mUser.setUid(uid);
 
         uploadFile(bitmap1,uid);
 

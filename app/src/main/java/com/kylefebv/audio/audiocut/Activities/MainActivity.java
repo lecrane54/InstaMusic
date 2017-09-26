@@ -6,16 +6,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.gigamole.navigationtabstrip.NavigationTabStrip;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kylefebv.audio.audiocut.Fragments.AddSongFragment;
 import com.kylefebv.audio.audiocut.Fragments.OtherUserFragment;
-import com.kylefebv.audio.audiocut.R;
+import com.kylefebv.audio.audiocut.Fragments.SearchFragment;
 import com.kylefebv.audio.audiocut.Fragments.UserFeedFragment;
 import com.kylefebv.audio.audiocut.Fragments.UserProfileFragment;
+import com.kylefebv.audio.audiocut.R;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -57,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
                     ft.commit();
                 }
                 if(index == 1){
-                    Log.d("ddd","dude");
+                    FragmentTransaction ft = manager.beginTransaction();
+                    ft.replace(R.id.container,new SearchFragment());
+                    ft.commit();
                 }
                 if(index == 2){
                     FragmentTransaction ft = manager.beginTransaction();

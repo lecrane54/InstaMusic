@@ -486,7 +486,6 @@ public class OtherUserFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 

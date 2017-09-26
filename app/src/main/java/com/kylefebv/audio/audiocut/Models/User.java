@@ -60,9 +60,7 @@ public class User {
     }
 
 
-    public void setFollowers(HashMap<String,String> followers) {
-        this.followers = followers;
-    }
+
 
 
     public User() {
@@ -70,13 +68,11 @@ public class User {
 
 
 
-    public User(String uid, String name, String email, String fbId,HashMap<String,String> followers,HashMap<String,String> following) {
+    public User(String uid, String name, String email, String fbId) {
         this.uid = uid;   // Primary key and key
         this.name = name;
         this.email = email;
         this.fbId = fbId;
-        this.followers = followers;
-        this.following = following;
 
     }
 
@@ -116,8 +112,6 @@ public class User {
         result.put("name",name);
         result.put("fbId",fbId);
         result.put("uid",uid);
-        result.put("following",following);
-        result.put("followers",followers);
         return result;
     }
 
