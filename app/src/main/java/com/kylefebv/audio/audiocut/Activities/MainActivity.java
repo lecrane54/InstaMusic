@@ -103,5 +103,9 @@ public class MainActivity extends AppCompatActivity {
        ft.replace(R.id.container,f);
        ft.commit();
    }
+
+   public void switchToMine(){
+
+   }
 }
 

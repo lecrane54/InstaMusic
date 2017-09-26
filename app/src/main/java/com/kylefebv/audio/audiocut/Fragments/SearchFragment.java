@@ -9,16 +9,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.kylefebv.audio.audiocut.Activities.MainActivity;
 import com.kylefebv.audio.audiocut.Adapters.UserListAdapter;
 import com.kylefebv.audio.audiocut.Models.User;
 import com.kylefebv.audio.audiocut.R;
@@ -26,9 +29,9 @@ import com.kylefebv.audio.audiocut.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
+
 public class SearchFragment extends Fragment {
     private EditText mEditText;
     private ListView mListView;
@@ -50,6 +53,8 @@ public class SearchFragment extends Fragment {
         mEditText = (EditText)v.findViewById(R.id.edittext);
         mListView = (ListView)v.findViewById(R.id.listView1);
         initTextListener();
+        mEditText.requestFocus();
+        showKeyboard();
         return v;
     }
 
@@ -117,8 +122,33 @@ public class SearchFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                hideSoftKeyboard();
+                if(mAdapter.getItem(position).getUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                {
+                    Bundle b = new Bundle();
+                    b.putString("uid",mAdapter.getItem(position).getUid());
+                    b.putString("name",mAdapter.getItem(position).getName());
+                    ((MainActivity)getContext()).switchToSingle(b, new UserProfileFragment());
+                }else{
+                    Bundle b = new Bundle();
+                    b.putString("uid",mAdapter.getItem(position).getUid());
+                    b.putString("name",mAdapter.getItem(position).getName());
+                    ((MainActivity)getContext()).switchToSingle(b,new OtherUserFragment());
+                }
 
             }
         });
+    }
+
+    private void hideSoftKeyboard(){
+        if(getActivity().getCurrentFocus() != null){
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    private void showKeyboard(){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mEditText, InputMethodManager.SHOW_FORCED);
     }
 }

@@ -53,12 +53,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public MediaPlayer mMediaPlayer;
     LayoutInflater layoutInflater;
 
-
-
-
-
-
-
     public RecyclerAdapter(Context context, FirebaseDatabase ref1, String uid1) {
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
@@ -72,7 +66,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     }
 
-
+    //TODO: fix query to only show songs from users you follow
 
     public void RecyclerAdapterAdd() {
         titles.clear();

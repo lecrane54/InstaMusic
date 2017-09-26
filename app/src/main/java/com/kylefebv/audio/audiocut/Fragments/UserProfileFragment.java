@@ -25,7 +25,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kylefebv.audio.audiocut.Activities.MainActivity;
 import com.kylefebv.audio.audiocut.Adapters.FirebaseAdapter;
-import com.kylefebv.audio.audiocut.Models.User;
 import com.kylefebv.audio.audiocut.R;
 
 import java.util.ArrayList;
@@ -99,9 +98,6 @@ public class UserProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-       // onFollowingClick();
-       // followerClick();
-
 
     }
 
@@ -110,10 +106,8 @@ public class UserProfileFragment extends Fragment {
         followingNames = new ArrayList<>();
         followingUUID = new ArrayList<>();
         followUUID = new ArrayList<>();
-        flwUUID = new ArrayList<>();
-        fingUUID = new ArrayList<>();
-        fingH = new HashMap<>();
-        flwH = new HashMap<>();
+
+
     }
 
     private void setUpRecyclerAdapter() {
@@ -147,14 +141,7 @@ public class UserProfileFragment extends Fragment {
         });
     }
 
-    private void getUidAndNames() {
 
-    }
-
-    private void getFollow() {
-        getFollowing();
-        getFollowers();
-    }
 
     private void getDatabaseRefs() {
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -162,26 +149,7 @@ public class UserProfileFragment extends Fragment {
         databaseReference = firebaseDatabase.getReference("users");
     }
 
-    private void followerClick() {
-        mFollowerText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new MaterialDialog.Builder(getActivity())
-                        .title("Followers")
-                        .items(followerNames)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                Bundle b = new Bundle();
-                                b.putString("uid", flwUUID.get(which));
-                                ((MainActivity) mContext).switchToProfile(b);
 
-                            }
-                        })
-                        .show();
-            }
-        });
-    }
 
     private View setUpView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
@@ -225,29 +193,9 @@ public class UserProfileFragment extends Fragment {
         mTextView.setText(name);
     }
 
-    private void getFollowers() {
-
-        databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                User mUser = dataSnapshot.getValue(User.class);
-                flwH = mUser.getFollowers();
-
-                flwUUID = mUser.setHashToList(flwUUID, flwH);
-                matchFollowList(flwUUID);
-                followerCount = mUser.followersCount();
-
-                setFollowerText(followerCount);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
 
 
-    }
+
 
     private void matchFollowList(ArrayList<String> s) {
         for (String d : s) {
@@ -267,26 +215,7 @@ public class UserProfileFragment extends Fragment {
 
     }
 
-    private void getFollowing() {
-        databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User mUser = dataSnapshot.getValue(User.class);
-                fingH = mUser.getFollowing();
-                fingUUID = mUser.setHashToList(fingUUID, fingH);
-                matchToFollowingList(fingUUID);
 
-                followingCount = mUser.followingCount() -1;
-
-                setFollowingText(followingCount);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private void setFollowingText(int count) {
         mFollowingText.setText(count + "\n following");

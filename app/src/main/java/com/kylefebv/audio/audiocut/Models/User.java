@@ -1,6 +1,5 @@
 package com.kylefebv.audio.audiocut.Models;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,53 +10,6 @@ import java.util.Map;
 public class User {
 
     private String uid,name,email, fbId;
-    private HashMap<String,String> following ;
-    private HashMap<String,String> followers ;
-    public HashMap<String,String> getFollowing() {
-        return following;
-    }
-
-    public ArrayList<String> setHashToList(ArrayList<String> d ,HashMap<String,String> h){
-        d = new ArrayList<>(h.values());
-        return d;
-
-
-    }
-    @SuppressWarnings("Since15")
-    public void removeFollower(String uid, String follower){
-        followers.remove(uid, follower);
-    }
-
-    @SuppressWarnings("Since15")
-    public void addToFollowers(String uid, String follower){
-        followers.put(uid, follower);
-    }
-
-    @SuppressWarnings("Since15")
-    public void removeFollowing(String uid, String follower){
-        following.remove(uid, follower);
-    }
-
-    @SuppressWarnings("Since15")
-    public void addToFollowing(String uid, String follower){
-        following.put(uid, follower);
-    }
-
-    public void setFollowing(HashMap<String,String> following) {
-        this.following = following;
-    }
-
-    public HashMap<String,String> getFollowers() {
-        return followers;
-    }
-
-    public int followersCount(){
-        return followers.size();
-    }
-
-    public int followingCount(){
-        return following.size();
-    }
 
 
 
