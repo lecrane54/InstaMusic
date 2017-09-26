@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -28,7 +29,6 @@ import com.kylefebv.audio.audiocut.Adapters.FirebaseAdapter;
 import com.kylefebv.audio.audiocut.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -48,18 +48,16 @@ public class UserProfileFragment extends Fragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManagerVertical;
     private FirebaseAdapter myRecyclerViewAdapter;
     StorageReference mStorageReference;
-    FirebaseStorage storage;
+    
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     int followerCount, followingCount;
-    HashMap<String, String> flwH;
-    HashMap<String, String> fingH;
+
     public static ArrayList<String> followingNames, followerNames, followUUID, followingUUID, flwUUID, fingUUID;
     Context mContext;
     String mName;
     DatabaseReference ref;
     String uid;
-    HashMap<String, String> h = new HashMap<>();
 
 
     public UserProfileFragment() {
@@ -97,7 +95,8 @@ public class UserProfileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        getFollowerCount();
+        getFollowingCount();
 
     }
 
@@ -195,30 +194,8 @@ public class UserProfileFragment extends Fragment {
 
 
 
-
-
-    private void matchFollowList(ArrayList<String> s) {
-        for (String d : s) {
-            getFollowerName(d);
-        }
-    }
-
-
-    private void matchToFollowingList(ArrayList<String> e) {
-        for (String d : e) {
-            if(!d.equals(uid)) {
-                getFollowingName(d);
-            }else{
-                followingCount = followerCount -1;
-            }
-        }
-
-    }
-
-
-
-    private void setFollowingText(int count) {
-        mFollowingText.setText(count + "\n following");
+    private void setFollowingText() {
+        mFollowingText.setText(followingCount + "\n following");
 
 
     }
@@ -241,6 +218,51 @@ public class UserProfileFragment extends Fragment {
 
     }
 
+    private void getFollowerCount(){
+        followerCount = 0;
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("followers").child(uid);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    followerCount++;
+                }
+                setFollowerText();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void getFollowingCount(){
+        followingCount = 0;
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("following")
+                .child(uid);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    followingCount++;
+                }
+                setFollowingText();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        setFollowingText();
+    }
+
     private void getFollowingName(String s) {
         databaseReference.child(s).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -258,8 +280,8 @@ public class UserProfileFragment extends Fragment {
 
     }
 
-    private void setFollowerText(int count) {
-        mFollowerText.setText(count + "\n followers");
+    private void setFollowerText() {
+        mFollowerText.setText(followerCount + "\n followers");
     }
 
 }

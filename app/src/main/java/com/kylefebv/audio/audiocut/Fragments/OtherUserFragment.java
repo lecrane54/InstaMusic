@@ -92,8 +92,8 @@ public class OtherUserFragment extends Fragment {
                 ((MainActivity) mContext).switchToSingle(b, new UserProfileFragment());
             }
             getName();
-            getFollow();
-           // checkIfFollowing();
+
+
             setUpRecyclerAdapter();
             loadImage();
         }
@@ -107,11 +107,9 @@ public class OtherUserFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
-
-
-
+        isFollowing();
+        getFollowerCount();
+        getFollowingCount();
     }
 
     private void initLists(){
@@ -134,13 +132,6 @@ public class OtherUserFragment extends Fragment {
     }
 
 
-
-
-
-    private void getFollow() {
-
-    }
-
     private void getDatabaseRefs() {
         firebaseDatabase = FirebaseDatabase.getInstance();
         ref = firebaseDatabase.getReference("songs");
@@ -158,10 +149,11 @@ public class OtherUserFragment extends Fragment {
         mFollowButton = (Button) v.findViewById(R.id.followbtn);
         mFollowerText = (TextView) v.findViewById(R.id.followers);
         mFollowingText = (TextView) v.findViewById(R.id.followings);
+        setNotFollowing();
 
 
         setClickFollow();
-        isFollowing();
+
 
         mContext = getActivity();
         initLists();
@@ -195,15 +187,14 @@ public class OtherUserFragment extends Fragment {
                 if(areFollowing){
                     setNotFollowing();
                     unfollowUser();
-
+                    getFollowingCount();
+                    getFollowerCount();
                 }else{
                     followUser();
                     setAreFollowing();
-
+                    getFollowingCount();
+                    getFollowerCount();
                 }
-
-
-
             }
         });
     }
@@ -217,7 +208,7 @@ public class OtherUserFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                setAreFollowing();
+                    setAreFollowing();
             }
 
             @Override
@@ -239,6 +230,8 @@ public class OtherUserFragment extends Fragment {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("uid")
                 .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
     }
 
     private void unfollowUser(){
@@ -253,6 +246,7 @@ public class OtherUserFragment extends Fragment {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("uid")
                 .removeValue();
+
     }
 
     private void setAreFollowing(){
@@ -316,6 +310,50 @@ public class OtherUserFragment extends Fragment {
         }
     }
 
+    private void getFollowerCount(){
+        followerCount = 0;
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("followers").child(uid);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    followerCount++;
+                }
+                setFollowerText();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void getFollowingCount(){
+        followingCount = 0;
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("following")
+                .child(uid);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    followingCount++;
+                }
+                setFollowingText();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        setFollowingText();
+    }
 
 
     private void setFollowingText() {
