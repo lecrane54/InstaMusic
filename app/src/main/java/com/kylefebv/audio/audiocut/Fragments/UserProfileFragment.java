@@ -48,7 +48,7 @@ public class UserProfileFragment extends Fragment {
     private StaggeredGridLayoutManager staggeredGridLayoutManagerVertical;
     private FirebaseAdapter myRecyclerViewAdapter;
     StorageReference mStorageReference;
-    
+
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     int followerCount, followingCount;

@@ -19,14 +19,17 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.kylefebv.audio.audiocut.R;
 import com.kylefebv.audio.audiocut.Models.UserSong;
+import com.kylefebv.audio.audiocut.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +45,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public static ArrayList<String> ids = new ArrayList<>();
     public static ArrayList<String> titles = new ArrayList<>();
     public static ArrayList<String> creators = new ArrayList<>();
+    public static ArrayList<String> following = new ArrayList<>();
     public static ArrayList<StorageReference> mp3s = new ArrayList<>();
     StorageReference mStorageReference;
     FirebaseStorage mFirebaseStorage;
@@ -62,40 +66,68 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         ref = ref1;
         uid = uid1;
         play = 0;
-        RecyclerAdapterAdd();
+        getFollowing();
+
+
 
     }
 
-    //TODO: fix query to only show songs from users you follow
 
-    public void RecyclerAdapterAdd() {
-        titles.clear();
-        creators.clear();
-        ids.clear();
-        mp3s.clear();
-        ref.getReference("songs").child(uid).orderByValue().addValueEventListener(new ValueEventListener() {
+    public void getFollowing(){
+        following.clear();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        Query query = ref.child("following").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    UserSong song = postSnapshot.getValue(UserSong.class);
-                    titles.add(song.getTitle());
-                    creators.add(song.getCreator());
-
-                    ids.add(song.getUuid());
+                for(DataSnapshot s : dataSnapshot.getChildren()){
+                    s.child("uid").getValue();
+                    Log.d("ddd",s.child("uid").getValue().toString());
+                    following.add(s.child("uid").getValue().toString());
                 }
-                notifyDataSetChanged();
-                getSongPaths();
+                RecyclerAdapterAdd();
             }
-
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+    }
+
+    public void RecyclerAdapterAdd() {
+        titles.clear();
+        creators.clear();
+        ids.clear();
+        mp3s.clear();
+        
+        DatabaseReference reff = FirebaseDatabase.getInstance().getReference();
+        for(int i = 0; i < following.size(); i++) {
+            Query q = reff.child("songs").child(following.get(i));
+            q.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        UserSong song = postSnapshot.getValue(UserSong.class);
+                        titles.add(song.getTitle());
+                        creators.add(song.getCreator());
+
+                        ids.add(song.getUuid());
+                    }
+                    notifyDataSetChanged();
+                    getSongPaths();
+                }
 
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
     }
 
     public  void getSongPaths(){
