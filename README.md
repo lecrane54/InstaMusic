@@ -7,4 +7,4 @@ This application is meant to be a way for artists to get their music heard. This
 Still a work in progress.
 
 
-![App Gif](/screens/gif1.gif "Use of App gif")
+
